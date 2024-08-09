@@ -34,6 +34,34 @@ public class UsrArticleController {
 		lastArticleId++;
 		return article;
 	}
+	private void deleteArticle(int id) {
+		Article article = getArticle(id);
+		articles.remove(article);
+	}
+
+	private Article getArticle(int id) {
+		for (Article article : articles) {
+			if (article.getId() == id) {
+				return article;
+			}
+		}
+		return null;
+	}
+	@RequestMapping("/usr/article/doDelete")
+	@ResponseBody
+	public String doDelete(int id) {
+
+		Article article = getArticle(id);
+
+		if (article == null) {
+			return id + "번 글은 존재하지 않습니다.";
+		}
+
+		deleteArticle(id);
+
+		return id + "번 글이 삭제 되었습니다";
+	}
+	
 	@RequestMapping("/usr/article/doAdd")
 	@ResponseBody
 	public Article doAdd(String title, String body) {
