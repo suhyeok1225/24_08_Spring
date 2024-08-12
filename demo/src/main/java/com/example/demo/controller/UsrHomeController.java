@@ -6,11 +6,5 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class UsrHomeController {
-	@RequestMapping("/usr/home/main")
-	@ResponseBody
-	public String showMain() {
 
-		return "MAIN!";
-	}
 }
-

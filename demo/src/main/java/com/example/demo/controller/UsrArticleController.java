@@ -11,37 +11,56 @@ import com.example.demo.vo.Article;
 
 @Controller
 public class UsrArticleController {
+
 	@Autowired
 	private ArticleService articleService;
+
 	@RequestMapping("/usr/article/getArticle")
 	@ResponseBody
 	public Object getArticle(int id) {
+
 		Article article = articleService.getArticleById(id);
+
 		if (article == null) {
 			return id + "번 글은 없음";
 		}
+
 		return article;
 	}
+
 	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	public Object doModify(int id, String title, String body) {
+		System.out.println("id : " + id);
+		System.out.println("title : " + title);
+		System.out.println("body : " + body);
+
 		Article article = articleService.getArticleById(id);
+
 		if (article == null) {
 			return id + "번 글은 없음";
 		}
+
 		articleService.modifyArticle(id, title, body);
+
 		return article;
 	}
+
 	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
 	public String doDelete(int id) {
+
 		Article article = articleService.getArticleById(id);
+
 		if (article == null) {
 			return id + "번 글은 없음";
 		}
+
 		articleService.deleteArticle(id);
+
 		return id + "번 글이 삭제됨";
 	}
+
 	@RequestMapping("/usr/article/doAdd")
 	@ResponseBody
 	public Article doAdd(String title, String body) {
@@ -55,5 +74,5 @@ public class UsrArticleController {
 	public List<Article> getArticles() {
 		return articleService.getArticles();
 	}
-}
 
+}
