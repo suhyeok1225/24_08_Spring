@@ -16,10 +16,13 @@ CREATE TABLE `member`(
       updateDate DATETIME NOT NULL,
       loginId CHAR(30) NOT NULL,
       loginPw CHAR(100) NOT NULL,
+      `authLevel` SMALLINT(2) UNSIGNED DEFAULT 3 COMMENT '권한 레벨 (3=일반,7=관리자)',
       `name` CHAR(20) NOT NULL,
       nickname CHAR(20) NOT NULL,
       cellphoneNum CHAR(20) NOT NULL,
-      email CHAR(50) NOT NULL
+      email CHAR(50) NOT NULL,
+      delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '탈퇴 여부 (0=탈퇴 전, 1=탈퇴 후)',
+      delDate DATETIME COMMENT '탈퇴 날짜'
 );
 
 ## 게시글 테스트 데이터 생성
@@ -48,10 +51,11 @@ SET regDate = NOW(),
 updateDate = NOW(),
 loginId = 'admin',
 loginPw = 'admin',
+`authLevel` = 7,
 `name` = '관리자',
 nickname = '관리자',
 cellphoneNum = '01012341234',
-email = 'abc@gmail.com';
+email = 'abcd@gmail.com';
 
 INSERT INTO `member`
 SET regDate = NOW(),
@@ -76,9 +80,9 @@ email = 'abcde@gmail.com';
 SELECT *
 FROM article
 ORDER BY id DESC;
-
 SELECT *
 FROM `member`;
+
 
 
 ###############################################################################
@@ -89,4 +93,4 @@ INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = CONCAT('제목__', RAND()),
-`body` = CONCAT('내용__', RAND());
+`body` = CONCAT('내용__', RAND());-
