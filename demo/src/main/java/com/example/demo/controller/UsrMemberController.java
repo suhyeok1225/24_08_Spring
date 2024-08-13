@@ -17,10 +17,29 @@ public class UsrMemberController {
 
 	@Autowired
 	private MemberService memberService;
+	
+	@RequestMapping("/usr/member/doLogout")
+	@ResponseBody
+	public ResultData<Member> doLogout(HttpSession httpSession) {
+
+		boolean isLogined = false;
+
+		if (httpSession.getAttribute("loginedMemberId") != null) {
+			isLogined = true;
+		}
+
+		if (!isLogined) {
+			return ResultData.from("F-A", "이미 로그아웃 함");
+		}
+
+		httpSession.removeAttribute("loginedMemberId");
+
+		return ResultData.from("S-1", Ut.f("로그아웃 성공"));
+	}
 
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
-	public ResultData<Member> doLogin(HttpSession httpSession, String loginId, String loginPw) {
+	public ResultData doLogin(HttpSession httpSession, String loginId, String loginPw) {
 		boolean isLogined = false;
 
 		if (httpSession.getAttribute("loginedMemberId") != null) {
@@ -28,36 +47,46 @@ public class UsrMemberController {
 		}
 
 		if (isLogined) {
-			return ResultData.from("F-A", "이미 로그인 상태입니다");
+			return ResultData.from("F-A", "이미 로그인 함");
 		}
-		
+
 		if (Ut.isEmptyOrNull(loginId)) {
-			return ResultData.from("F-1", "아이디를 입력해주세요");
+			return ResultData.from("F-1", "loginId 입력 x");
 		}
-		
+
 		if (Ut.isEmptyOrNull(loginPw)) {
-			return ResultData.from("F-2", "비밀번호를 입력해주세요");
+			return ResultData.from("F-2", "loginPw 입력 x");
 		}
-		
+
 		Member member = memberService.getMemberByLoginId(loginId);
 
 		if (member == null) {
-			return ResultData.from("F-3", Ut.f("%s(은)는 존재하지 않는 아이디입니다", loginId));
+			return ResultData.from("F-3", Ut.f("%s(은)는 존재 x", loginId));
 		}
 
 		if (member.getLoginPw().equals(loginPw) == false) {
-			return ResultData.from("F-4", Ut.f("비밀번호가 일치하지 않습니다"));
+			return ResultData.from("F-4", Ut.f("비밀번호 틀림"));
 		}
 
 		httpSession.setAttribute("loginedMemberId", member.getId());
 
-		return ResultData.from("S-1", Ut.f("%s님 환영합니다", member.getNickname()));
+		return ResultData.from("S-1", Ut.f("%s님 환영합니다", member.getNickname()), member);
 	}
 
 	@RequestMapping("/usr/member/doJoin")
 	@ResponseBody
-	public ResultData<Member> doJoin(String loginId, String loginPw, String name, String nickname, String cellphoneNum,
-			String email) {
+	public ResultData<Member> doJoin(HttpSession httpSession, String loginId, String loginPw, String name,
+			String nickname, String cellphoneNum, String email) {
+
+		boolean isLogined = false;
+
+		if (httpSession.getAttribute("loginedMemberId") != null) {
+			isLogined = true;
+		}
+
+		if (isLogined) {
+			return ResultData.from("F-A", "이미 로그인 함");
+		}
 
 		if (Ut.isEmptyOrNull(loginId)) {
 			return ResultData.from("F-1", "loginId 입력 x");
