@@ -17,14 +17,14 @@ public interface MemberRepository {
 
 	@Select("SELECT * FROM `member` WHERE id = #{id}")
 	public Member getMemberById(int id);
-	
+
 	@Select("""
-			SELECT * 
-			FROM `member` 
+			SELECT *
+			FROM `member`
 			WHERE loginId = #{loginId}
 			""")
 	public Member getMemberByLoginId(String loginId);
-	
+
 	@Select("""
 			SELECT *
 			FROM `member`

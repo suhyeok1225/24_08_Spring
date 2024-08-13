@@ -22,9 +22,10 @@ public class ArticleService {
 
 	public ResultData writeArticle(int memberId, String title, String body) {
 		articleRepository.writeArticle(memberId, title, body);
+
 		int id = articleRepository.getLastInsertId();
 
-		return ResultData.from("S-1", Ut.f("%d번 글이 등록되었습니다", id), id);
+		return ResultData.from("S-1", Ut.f("%d번 글이 등록되었습니다", id), "등록 된 게시글의 id", id);
 	}
 
 	public void deleteArticle(int id) {
@@ -50,6 +51,7 @@ public class ArticleService {
 			return ResultData.from("F-2", Ut.f("%d번 게시글에 대한 권한이 없습니다", article.getId()));
 
 		}
-		return ResultData.from("S-1", Ut.f("%d번 게시글을 수정했습니다", article.getId()), article);
+		return ResultData.from("S-1", Ut.f("%d번 게시글을 수정했습니다", article.getId()), "수정된 게시글", article);
 	}
+
 }

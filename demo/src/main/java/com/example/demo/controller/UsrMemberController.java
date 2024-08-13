@@ -17,7 +17,7 @@ public class UsrMemberController {
 
 	@Autowired
 	private MemberService memberService;
-	
+
 	@RequestMapping("/usr/member/doLogout")
 	@ResponseBody
 	public ResultData<Member> doLogout(HttpSession httpSession) {
@@ -40,6 +40,7 @@ public class UsrMemberController {
 	@RequestMapping("/usr/member/doLogin")
 	@ResponseBody
 	public ResultData doLogin(HttpSession httpSession, String loginId, String loginPw) {
+
 		boolean isLogined = false;
 
 		if (httpSession.getAttribute("loginedMemberId") != null) {
@@ -53,7 +54,6 @@ public class UsrMemberController {
 		if (Ut.isEmptyOrNull(loginId)) {
 			return ResultData.from("F-1", "loginId 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(loginPw)) {
 			return ResultData.from("F-2", "loginPw 입력 x");
 		}
@@ -61,7 +61,7 @@ public class UsrMemberController {
 		Member member = memberService.getMemberByLoginId(loginId);
 
 		if (member == null) {
-			return ResultData.from("F-3", Ut.f("%s(은)는 존재 x", loginId));
+			return ResultData.from("F-3", Ut.f("%s는(은) 존재 x", loginId));
 		}
 
 		if (member.getLoginPw().equals(loginPw) == false) {
@@ -70,7 +70,7 @@ public class UsrMemberController {
 
 		httpSession.setAttribute("loginedMemberId", member.getId());
 
-		return ResultData.from("S-1", Ut.f("%s님 환영합니다", member.getNickname()), member);
+		return ResultData.from("S-1", Ut.f("%s님 환영합니다", member.getNickname()), "로그인 한 회원", member);
 	}
 
 	@RequestMapping("/usr/member/doJoin")
@@ -91,33 +91,31 @@ public class UsrMemberController {
 		if (Ut.isEmptyOrNull(loginId)) {
 			return ResultData.from("F-1", "loginId 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(loginPw)) {
 			return ResultData.from("F-2", "loginPw 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(name)) {
 			return ResultData.from("F-3", "name 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(nickname)) {
 			return ResultData.from("F-4", "nickname 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(cellphoneNum)) {
 			return ResultData.from("F-5", "cellphoneNum 입력 x");
 		}
-
 		if (Ut.isEmptyOrNull(email)) {
 			return ResultData.from("F-6", "email 입력 x");
 		}
+
 		ResultData doJoinRd = memberService.doJoin(loginId, loginPw, name, nickname, cellphoneNum, email);
+
 		if (doJoinRd.isFail()) {
 			return doJoinRd;
 		}
 
 		Member member = memberService.getMemberById((int) doJoinRd.getData1());
-		return ResultData.newData(doJoinRd, member);
+
+		return ResultData.newData(doJoinRd, "새로 생성된 member", member);
 	}
 
 }
