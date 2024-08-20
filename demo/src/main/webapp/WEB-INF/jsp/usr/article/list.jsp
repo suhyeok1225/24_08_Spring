@@ -3,7 +3,6 @@
 <c:set var="pageTitle" value="${board.code } LIST"></c:set>
 <%@ include file="../common/head.jspf"%>
 <hr />
-
 <section class="mt-24 text-xl px-4">
 	<div class="mx-auto">
 		<div>${articlesCount }개</div>
@@ -27,7 +26,6 @@
 						<td style="text-align: center;">${article.extra__writer}</td>
 					</tr>
 				</c:forEach>
-
 				<c:if test="${empty articles}">
 					<tr>
 						<td colspan="4" style="text-align: center;">게시글이 없습니다</td>
@@ -36,6 +34,34 @@
 			</tbody>
 		</table>
 	</div>
-</section>
+	<!-- 	동적 페이징 -->
+	<div class="pagination flex justify-center mt-3">
+		<c:set var="paginationLen" value="3" />
+		<c:set var="startPage" value="${page -  paginationLen  >= 1 ? page - paginationLen : 1}" />
+		<c:set var="endPage" value="${page +  paginationLen  <= pagesCount ? page + paginationLen : pagesCount}" />
 
+		<c:if test="${startPage > 1 }">
+			<a class="btn btn-sm" href="?page=1&boardId=${boardId }">1</a>
+
+		</c:if>
+		<c:if test="${startPage > 2 }">
+			<button class="btn btn-sm btn-disabled">...</button>
+		</c:if>
+
+		<c:forEach begin="${startPage }" end="${endPage }" var="i">
+			<a class="btn btn-sm ${param.page == i ? 'btn-active' : '' }" href="?page=${i }&boardId=${boardId}">${i }</a>
+		</c:forEach>
+
+		<c:if test="${endPage < pagesCount - 1 }">
+			<button class="btn btn-sm btn-disabled">...</button>
+		</c:if>
+
+		<c:if test="${endPage < pagesCount }">
+			<a class="btn btn-sm" href="?page=${pagesCount }&boardId=${boardId }">${pagesCount }</a>
+		</c:if>
+	</div>
+
+
+	
+</section>
 <%@ include file="../common/foot.jspf"%>
